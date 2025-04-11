@@ -1,0 +1,82 @@
+﻿@model List<OrderDetailModel>
+@{
+    decimal tong = 0;
+
+    // Nhóm đơn hàng theo Tỉnh Thành Nhận Hàng
+    var groupedOrders = Model
+        .GroupBy(order => order.Order.DeliveryProvince)
+        .ToList();
+}
+<!-- Order History Section -->
+<section class="container my-5">
+    <div class="text-center mb-5">
+        <h2>Lịch Sử Đơn Hàng</h2>
+        <p class="text-muted">Xem lại các đơn hàng đã đặt của bạn</p>
+    </div>
+    <!-- Order History Table -->
+    @if (!Model.Any())
+    {
+        <h1 class="text-center">
+            <strong>Đơn hàng của bạn chưa có </strong>
+        </h1>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Tỉnh Thành Nhận Hàng</th>
+                        <th>Chi Tiết Đơn Hàng</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var group in groupedOrders)
+                    {
+                        <tr>
+                            <!-- Tỉnh Thành Nhận Hàng -->
+                            <td><strong>@group.Key</strong></td>
+
+                            <!-- Chi Tiết Đơn Hàng -->
+                            <td>
+                                <table class="table table-sm">
+                                    <thead>
+                                        <tr>
+                                            <th>Mã Đơn Hàng</th>
+                                            <th>Tên Đơn Hàng</th>
+                                            <th>Thời Gian Vận Chuyển</th>
+                                            <th>Thời Gian Hoàn Thành</th>
+                                            <th>Chi Tiết</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in group)
+                                        {
+                                            @foreach (var details in item.Details)
+                                            {
+                                                <tr>
+                                                    <td>@details.ProductID</td>
+                                                    <td>
+                                                        <div class="d-flex align-items-center">
+                                                            <img src="~/images/products/@(string.IsNullOrWhiteSpace(details.Photo) ? "" : details.Photo)" alt="Product" class="img-thumbnail" style="width: 50px; height: 50px;">
+                                                            <span class="ml-3">@details.ProductName</span>
+                                                        </div>
+                                                    </td>
+                                                    <td>@item.Order.ShippedTime</td>
+                                                    <td>@item.Order.FinishedTime</td>
+                                                    
+                                                </tr>
+                                            }
+                                        <td><a href="~/Order/OrderDetails/@item.Order.OrderID" class="btn btn-info btn-sm">Xem Chi Tiết</a></td>
+                                        }
+
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</section>

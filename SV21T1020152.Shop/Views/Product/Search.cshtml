@@ -1,0 +1,68 @@
+﻿
+@model SV21T1020152.Shop.Models.ProductSearchOutput
+@{
+    Layout = null;
+}
+
+<p class="my-3">
+    Có <strong>@Model.RowCount</strong> mặt hàng trong tổng số <strong>@Model.PageCount</strong> trang
+</p>
+
+<div class="row g-3">
+    @foreach (var item in Model.Data)
+    {
+        <div class="col-md-3">
+            <div class="card border-info">
+                <div class="card-header bg-info text-white">
+                    <h5 class="card-title m-0 product-title">@item.ProductName</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <img class="img-fluid rounded"
+                                 src="~/images/products/@(string.IsNullOrWhiteSpace(item.Photo) ? "" : item.Photo)"
+                                 alt="@item.ProductName">
+                        </div>
+                        <div class="col-md-8">
+                            <ul class="list-group">
+                                <li class="list-group-item d-flex align-items-center">
+                                    <i class="bi bi-cash-coin me-2"></i> @item.Price.ToString("N0")
+                                </li>
+                                <li class="list-group-item d-flex align-items-center">
+                                    <i class="bi bi-box-arrow-right me-2"></i> @item.Unit
+                                </li>
+                            </ul>
+                            <div class="d-flex justify-content-start mt-3">
+                                <a href="~/Product/Detail/@item.ProductID" class="btn btn-primary btn-sm">
+                                    <i class="bi bi-box-arrow-in-right"></i> Chi Tiết
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<div class="text-center mt-3">
+    <nav>
+        <ul class="pagination justify-content-center">
+            @for (int p = 1; p <= Model.PageCount; p++)
+            {
+                if (p == Model.Page)
+                {
+                    <li class="page-item active" aria-current="page">
+                        <span class="page-link">@p</span>
+                    </li>
+                }
+                else
+                {
+                    <li class="page-item">
+                        <a class="page-link" href="#" onclick="doSearch(@p)">@p</a>
+                    </li>
+                }
+            }
+        </ul>
+    </nav>
+</div>
